@@ -23,7 +23,6 @@ $(document).ready(function () {
         var viewId = $(event.target).parent("li").attr("id");
 
         let checkedItem = todoForm.todos.find((item) => item.id === viewId);
-        console.log(viewId);
         if (checkedItem !== undefined) {
             checkedItem.complete = !checkedItem.complete;
         }
@@ -45,9 +44,8 @@ $(document).ready(function () {
         }
 
         var list = todo.filter((x) => filterBys(x, status)).map((x) => {
-
             todoLi = () => {
-                return `<li id="${x.id}" class="${checkComplete(x.complete)}" >
+                return `<li id="${x.id}" class="${checkComplete(x.complete)}" onclick="editItem(event)">
                 <input name="done-todo" type="checkbox" class="done-todo" ${x.complete ? 'checked' : ""} onclick = "checkItem(event)" >${x.name}</li>`;
             }
             return todoLi();
@@ -55,7 +53,27 @@ $(document).ready(function () {
 
         return list;
     }
+window.editItem = (event)=>{
+    console.log(event.target);
+     var viewId = $(event.target).attr("id");
+    //var text =  $(event.target).text();
+    console.log(viewId);
+    $(event.target).attr("contentEditable",true)
+        .focus()
+        .keypress(
+        function (event){
+            var keycode = event.keyCode?event.keyCode:event.which;
+            if(keycode == "13"){
+                todoForm.todos.find((item)=>item.id === viewId).name = $(event.target).text();
+                console.log( todoForm.todos);
+                render();
+            }
+        }
+    )
 
+   // render();
+
+}
 
     window.showStatus = (currentStatus, status) => {
         if (currentStatus == status) {
